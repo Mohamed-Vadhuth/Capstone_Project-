@@ -1,0 +1,5 @@
+freelancer_platform\entity\User.class
+freelancer_platform\repository\UserRepository.class
+freelancer_platform\controller\UserController.class
+freelancer_platform\controller\HomeController.class
+freelancer_platform\FreelancerPlatformApplication.class

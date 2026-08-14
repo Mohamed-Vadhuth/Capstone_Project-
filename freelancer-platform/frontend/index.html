@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Freelancer Platform</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            Freelancer Platform
+        </div>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#projects">Projects</a>
+            <a href="#post-project">Post Project</a>
+            <a href="#proposal">Submit Proposal</a>
+            <a href="#login">Login</a>
+            <a href="#register" class="register-btn">Register</a>
+        </nav>
+
+    </header>
+
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+
+    <section id="home" class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                Find the Right Freelancer
+                <br>
+                for Your Project
+            </h1>
+
+            <p>
+                Connect with talented freelancers, post projects,
+                and build great things together.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#projects" class="primary-btn">
+                    Find Projects
+                </a>
+
+                <a href="#register" class="secondary-btn">
+                    Get Started
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FEATURES
+    ========================== -->
+
+    <section class="features">
+
+        <h2>Why Choose Freelancer Platform?</h2>
+
+        <div class="feature-container">
+
+            <div class="feature-card">
+
+                <h3>👨‍💻 Find Freelancers</h3>
+
+                <p>
+                    Find skilled freelancers for your
+                    project requirements.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <h3>📋 Post Projects</h3>
+
+                <p>
+                    Create projects and receive proposals
+                    from freelancers.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <h3>🤝 Easy Collaboration</h3>
+
+                <p>
+                    Manage proposals and connect with the
+                    right freelancer.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         PROJECTS SECTION
+    ========================== -->
+
+    <section id="projects" class="projects-section">
+
+        <h2>Available Projects</h2>
+
+        <p>
+            Explore projects posted by clients.
+        </p>
+
+        <div id="projectList" class="project-list">
+
+            <!-- Projects loaded from backend -->
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         POST PROJECT
+    ========================== -->
+
+    <section id="post-project" class="form-section">
+
+        <h2>Post a Project</h2>
+
+        <p>
+            Create a project and find the right freelancer.
+        </p>
+
+        <form id="projectForm">
+
+            <input
+                type="text"
+                id="projectTitle"
+                placeholder="Project Title"
+                required
+            >
+
+            <textarea
+                id="projectDescription"
+                placeholder="Project Description"
+                rows="5"
+                required
+            ></textarea>
+
+            <input
+                type="number"
+                id="projectBudget"
+                placeholder="Budget"
+                min="1"
+                required
+            >
+
+            <input
+                type="text"
+                id="projectCategory"
+                placeholder="Category"
+                required
+            >
+
+            <button type="submit">
+                Post Project
+            </button>
+
+        </form>
+
+        <p id="projectMessage"></p>
+
+    </section>
+
+
+    <!-- =========================
+         SUBMIT PROPOSAL
+    ========================== -->
+
+    <section id="proposal" class="form-section">
+
+        <h2>Submit a Proposal</h2>
+
+        <p>
+            Apply for a project by submitting your proposal.
+        </p>
+
+        <form id="proposalForm">
+
+            <input
+                type="number"
+                id="proposalProjectId"
+                placeholder="Project ID"
+                min="1"
+                required
+            >
+
+            <input
+                type="email"
+                id="freelancerEmail"
+                placeholder="Freelancer Email"
+                required
+            >
+
+            <textarea
+                id="coverLetter"
+                placeholder="Cover Letter"
+                rows="6"
+                required
+            ></textarea>
+
+            <input
+                type="number"
+                id="proposedAmount"
+                placeholder="Proposed Amount"
+                min="1"
+                required
+            >
+
+            <button type="submit">
+                Submit Proposal
+            </button>
+
+        </form>
+
+        <p id="proposalMessage"></p>
+
+    </section>
+
+
+    <!-- =========================
+         LOGIN
+    ========================== -->
+
+    <section id="login" class="form-section">
+
+        <h2>Login</h2>
+
+        <form id="loginForm">
+
+            <input
+                type="email"
+                id="loginEmail"
+                placeholder="Email"
+                required
+            >
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Password"
+                required
+            >
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <p id="loginMessage"></p>
+
+    </section>
+
+
+    <!-- =========================
+         REGISTER
+    ========================== -->
+
+    <section id="register" class="form-section">
+
+        <h2>Create Account</h2>
+
+        <form id="registerForm">
+
+            <input
+                type="text"
+                id="registerName"
+                placeholder="Full Name"
+                required
+            >
+
+            <input
+                type="email"
+                id="registerEmail"
+                placeholder="Email"
+                required
+            >
+
+            <input
+                type="password"
+                id="registerPassword"
+                placeholder="Password"
+                required
+            >
+
+            <select id="registerRole">
+
+                <option value="FREELANCER">
+                    Freelancer
+                </option>
+
+                <option value="CLIENT">
+                    Client
+                </option>
+
+            </select>
+
+            <button type="submit">
+                Register
+            </button>
+
+        </form>
+
+        <p id="registerMessage"></p>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Freelancer Platform
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
