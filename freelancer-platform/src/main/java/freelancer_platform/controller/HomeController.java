@@ -10,4 +10,9 @@ public class HomeController {
     public String home() {
         return "Freelancer Platform is Running Successfully!";
     }
+
+    @GetMapping("/health")
+    public java.util.Map<String, String> health() {
+        return java.util.Collections.singletonMap("status", "UP");
+    }
 }
