@@ -269,9 +269,22 @@ Run the complete automated test suite:
 
 ---
 
-## 🔮 15. Future Enhancements
+## ⚙️ 15. Continuous Integration (CI)
+
+Automated testing is configured using **GitHub Actions** (`.github/workflows/ci.yml`):
+- **Triggers**: Automated build runs on every `push` to `main` and on `pull_request` targeting `main`.
+- **Environment**: Ubuntu Latest with Eclipse Temurin JDK 21 and a dedicated MySQL 8.0 service container.
+- **Workflow Steps**:
+  1. Checks out repository code.
+  2. Provisions JDK 21 and configures Maven dependency caching.
+  3. Executes the full automated suite via `./mvnw clean test`.
+  4. Fails the workflow immediately if any test fails.
+
+---
+
+## 🔮 16. Future Enhancements
 
 - Milestone payment escrow integration (Stripe / PayPal sandbox).
 - Real-time WebSocket messaging and project collaboration chat.
 - Secure file and asset attachment storage for project deliverables.
-- Continuous Integration & Deployment (GitHub Actions pipeline).
+- Cloud staging and production deployment.

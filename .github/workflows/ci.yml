@@ -1,0 +1,48 @@
+name: Freelancer Platform CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: freelancer_platform
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    defaults:
+      run:
+        working-directory: ./freelancer-platform
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Grant execute permission for Maven wrapper
+        run: chmod +x mvnw
+
+      - name: Build and run automated tests
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/freelancer_platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+          SPRING_DATASOURCE_USERNAME: root
+          SPRING_DATASOURCE_PASSWORD: root
+          JWT_SECRET: c2VjdXJlX2RldmVsb3BtZW50X2tleV9mb3JfZnJlZWxhbmNlcl9wbGF0Zm9ybV9jYXBzdG9uZV9wcm9qZWN0XzIwMjZfMjU2Yml0cw==
+        run: ./mvnw clean test
