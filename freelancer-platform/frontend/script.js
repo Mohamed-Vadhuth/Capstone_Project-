@@ -1,4 +1,7 @@
-const API_URL = "http://localhost:8080";
+// Dynamically configure backend API URL for local and cloud environments
+const API_URL = (typeof window !== "undefined" && window.API_BASE_URL)
+    || (typeof localStorage !== "undefined" && localStorage.getItem("customApiUrl"))
+    || "http://localhost:8080";
 
 /* =========================
    AUTH TOKEN & SESSION HELPERS

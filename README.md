@@ -227,13 +227,28 @@ Create the MySQL database:
 CREATE DATABASE IF NOT EXISTS freelancer_db;
 ```
 
-### 2. Environment Variables
-Copy `.env.example` or configure `application.properties`:
+### 2. Environment Variables Configuration
+
+Copy `.env.example` to configure variables locally or in your cloud hosting provider:
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/freelancer_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-spring.datasource.username=root
-spring.datasource.password=your_password
-app.jwt.secret=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+# Server
+PORT=8080
+
+# Database
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/freelancer_platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=your_password
+
+# JPA / Hibernate
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
+SPRING_JPA_SHOW_SQL=false
+
+# Security (Set 256-bit+ secret in production)
+JWT_SECRET=your_secure_256bit_production_jwt_secret_key_here
+JWT_EXPIRATION_MS=86400000
+
+# CORS Allowed Origins
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:5500,http://127.0.0.1:5500,http://localhost:8080
 ```
 
 ### 3. Backend Setup
@@ -249,6 +264,7 @@ Serve the `frontend/` directory on port 3000:
 npx serve -p 3000 frontend
 ```
 Frontend will be accessible at `http://localhost:3000/`.
+> **Frontend API URL Configuration**: The frontend defaults to `http://localhost:8080`. For cloud deployment, configure `window.API_BASE_URL = "https://your-backend-domain.com"` or store it in `localStorage.setItem("customApiUrl", "https://your-backend-domain.com")`.
 
 ---
 
