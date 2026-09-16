@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Freelancer Platform</title>
-
+    <title>Freelancer Platform - Marketplace</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -17,20 +15,25 @@
     ========================== -->
 
     <header class="navbar">
-
         <div class="logo">
             Freelancer Platform
         </div>
 
         <nav>
             <a href="#home">Home</a>
-            <a href="#projects">Projects</a>
-            <a href="#post-project">Post Project</a>
-            <a href="#proposal">Submit Proposal</a>
-            <a href="#login">Login</a>
-            <a href="#register" class="register-btn">Register</a>
-        </nav>
+            <a href="#projects">Browse Projects</a>
+            <a href="#client-dashboard" id="navClientDashboardLink" style="display: none;">Client Dashboard</a>
+            <a href="#freelancer-dashboard" id="navFreelancerDashboardLink" style="display: none;">My Proposals</a>
+            <a href="#user-profile" id="navProfileLink" style="display: none;">My Profile</a>
+            <a href="#post-project" id="navPostProjectLink">Post Project</a>
+            <a href="#proposal" id="navProposalLink">Submit Proposal</a>
+            <a href="#view-proposals" id="navViewProposalsLink">Proposals</a>
 
+            <span id="navUserStatus" class="nav-user-status" style="display: none;"></span>
+            <a href="#login" id="navLoginLink">Login</a>
+            <a href="#register" id="navRegisterLink" class="register-btn">Register</a>
+            <button id="navLogoutBtn" class="logout-btn" style="display: none;" onclick="logoutUser()">Logout</button>
+        </nav>
     </header>
 
 
@@ -39,105 +42,239 @@
     ========================== -->
 
     <section id="home" class="hero">
-
         <div class="hero-content">
-
             <h1>
                 Find the Right Freelancer
                 <br>
                 for Your Project
             </h1>
-
             <p>
-                Connect with talented freelancers, post projects,
-                and build great things together.
+                Connect with top talent, manage project lifecycles, track proposals, and share verified reviews.
             </p>
-
             <div class="hero-buttons">
-
-                <a href="#projects" class="primary-btn">
-                    Find Projects
-                </a>
-
-                <a href="#register" class="secondary-btn">
-                    Get Started
-                </a>
-
+                <a href="#projects" class="primary-btn">Browse Projects</a>
+                <a href="#register" class="secondary-btn" id="heroGetStartedBtn">Get Started</a>
             </div>
-
         </div>
-
     </section>
 
 
     <!-- =========================
-         FEATURES
+         CLIENT DASHBOARD (Feature 2)
     ========================== -->
 
-    <section class="features">
-
-        <h2>Why Choose Freelancer Platform?</h2>
-
-        <div class="feature-container">
-
-            <div class="feature-card">
-
-                <h3>👨‍💻 Find Freelancers</h3>
-
-                <p>
-                    Find skilled freelancers for your
-                    project requirements.
-                </p>
-
+    <section id="client-dashboard" class="dashboard-section" style="display: none;">
+        <div class="section-container">
+            <div class="dashboard-header">
+                <h2>Client Dashboard</h2>
+                <p>Track your posted projects, proposals received, and project progress.</p>
             </div>
 
-
-            <div class="feature-card">
-
-                <h3>📋 Post Projects</h3>
-
-                <p>
-                    Create projects and receive proposals
-                    from freelancers.
-                </p>
-
+            <!-- Stats Bar -->
+            <div class="stats-grid" id="clientStatsGrid">
+                <div class="stat-card">
+                    <div class="stat-num" id="clientStatTotal">0</div>
+                    <div class="stat-label">Total Projects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="clientStatOpen">0</div>
+                    <div class="stat-label">Open Projects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="clientStatInProgress">0</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="clientStatCompleted">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card highlight">
+                    <div class="stat-num" id="clientStatProposals">0</div>
+                    <div class="stat-label">Proposals Received</div>
+                </div>
             </div>
 
-
-            <div class="feature-card">
-
-                <h3>🤝 Easy Collaboration</h3>
-
-                <p>
-                    Manage proposals and connect with the
-                    right freelancer.
-                </p>
-
+            <div class="dashboard-actions-bar">
+                <h3>My Posted Projects</h3>
+                <a href="#post-project" class="action-link-btn">+ Post New Project</a>
             </div>
 
+            <div id="clientProjectsList" class="dashboard-projects-grid">
+                <!-- Client projects loaded dynamically -->
+            </div>
         </div>
-
     </section>
 
 
     <!-- =========================
-         PROJECTS SECTION
+         FREELANCER DASHBOARD (Feature 3)
+    ========================== -->
+
+    <section id="freelancer-dashboard" class="dashboard-section" style="display: none;">
+        <div class="section-container">
+            <div class="dashboard-header">
+                <h2>Freelancer Dashboard</h2>
+                <p>Manage your submitted proposals, track acceptances, and leave client reviews.</p>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-grid" id="freelancerStatsGrid">
+                <div class="stat-card">
+                    <div class="stat-num" id="flStatTotal">0</div>
+                    <div class="stat-label">Total Submitted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="flStatPending">0</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-num" id="flStatAccepted">0</div>
+                    <div class="stat-label">Accepted Proposals</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-num" id="flStatRejected">0</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+                <div class="stat-card highlight">
+                    <div class="stat-num" id="flStatCompleted">0</div>
+                    <div class="stat-label">Completed Projects</div>
+                </div>
+            </div>
+
+            <h3>My Submitted Proposals</h3>
+            <div id="freelancerProposalsList" class="dashboard-proposals-grid">
+                <!-- Freelancer proposals loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================
+         USER PROFILE SECTION (Feature 1)
+    ========================== -->
+
+    <section id="user-profile" class="form-section profile-section" style="display: none;">
+        <div class="section-container">
+            <h2>User Profile</h2>
+            <p>View and manage your professional bio, skills, and portfolio.</p>
+
+            <div class="profile-card">
+                <div class="profile-header-info">
+                    <div class="profile-avatar">👤</div>
+                    <div class="profile-meta">
+                        <h3 id="profNameDisplay">User Name</h3>
+                        <p id="profEmailDisplay" class="text-muted">user@example.com</p>
+                        <span id="profRoleBadge" class="badge-role">ROLE</span>
+                        <div class="rating-badge" id="profRatingDisplay">★ 0.0 (0 reviews)</div>
+                    </div>
+                </div>
+
+                <form id="profileForm" class="profile-edit-form">
+                    <div class="form-group">
+                        <label for="profNameInput">Full Name</label>
+                        <input type="text" id="profNameInput" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profBioInput">Professional Bio</label>
+                        <textarea id="profBioInput" rows="3" placeholder="Tell clients and collaborators about yourself..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profSkillsInput">Skills (Comma-separated)</label>
+                        <input type="text" id="profSkillsInput" placeholder="e.g. Java, Spring Boot, React, MySQL">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profExperienceInput">Experience</label>
+                        <input type="text" id="profExperienceInput" placeholder="e.g. 5+ years building full-stack applications">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profPortfolioInput">Portfolio URL</label>
+                        <input type="url" id="profPortfolioInput" placeholder="https://yourportfolio.com">
+                    </div>
+
+                    <button type="submit" class="primary-btn">Save Profile Changes</button>
+                </form>
+                <p id="profileMessage" class="message-text"></p>
+
+                <!-- Reviews Received -->
+                <div class="profile-reviews-container">
+                    <h4>Reviews & Ratings Received</h4>
+                    <div id="profileReviewsList" class="reviews-list">
+                        <!-- User reviews loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================
+         PROJECTS SECTION (Feature 4 - Search & Filter)
     ========================== -->
 
     <section id="projects" class="projects-section">
-
         <h2>Available Projects</h2>
+        <p>Explore projects posted by clients with powerful search, filters, and sorting.</p>
 
-        <p>
-            Explore projects posted by clients.
-        </p>
+        <!-- Search & Filter Controls -->
+        <div class="search-filter-panel">
+            <div class="search-row">
+                <input type="text" id="projectSearchQuery" placeholder="🔍 Search projects by title or description..." />
+                <button type="button" id="applySearchBtn" onclick="triggerProjectSearch()">Search</button>
+                <button type="button" id="clearSearchBtn" class="secondary-filter-btn" onclick="clearProjectFilters()">Reset</button>
+            </div>
 
-        <div id="projectList" class="project-list">
+            <div class="filters-row">
+                <div class="filter-item">
+                    <label for="projectFilterCategory">Category</label>
+                    <select id="projectFilterCategory" onchange="triggerProjectSearch()">
+                        <option value="">All Categories</option>
+                        <option value="Backend">Backend</option>
+                        <option value="Frontend">Frontend</option>
+                        <option value="Fullstack">Fullstack</option>
+                        <option value="Mobile">Mobile</option>
+                        <option value="Design">Design</option>
+                        <option value="DevOps">DevOps</option>
+                    </select>
+                </div>
 
-            <!-- Projects loaded from backend -->
+                <div class="filter-item">
+                    <label for="projectFilterStatus">Status</label>
+                    <select id="projectFilterStatus" onchange="triggerProjectSearch()">
+                        <option value="">All Statuses</option>
+                        <option value="OPEN">OPEN</option>
+                        <option value="IN_PROGRESS">IN_PROGRESS</option>
+                        <option value="COMPLETED">COMPLETED</option>
+                    </select>
+                </div>
 
+                <div class="filter-item">
+                    <label for="projectFilterMinBudget">Min Budget (₹)</label>
+                    <input type="number" id="projectFilterMinBudget" placeholder="0" min="0" onchange="triggerProjectSearch()" />
+                </div>
+
+                <div class="filter-item">
+                    <label for="projectFilterMaxBudget">Max Budget (₹)</label>
+                    <input type="number" id="projectFilterMaxBudget" placeholder="Max" min="0" onchange="triggerProjectSearch()" />
+                </div>
+
+                <div class="filter-item">
+                    <label for="projectSortBy">Sort By</label>
+                    <select id="projectSortBy" onchange="triggerProjectSearch()">
+                        <option value="newest">Newest First</option>
+                        <option value="budget_asc">Budget: Low to High</option>
+                        <option value="budget_desc">Budget: High to Low</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
+        <div id="projectList" class="project-list">
+            <!-- Projects loaded from backend -->
+        </div>
     </section>
 
 
@@ -146,108 +283,96 @@
     ========================== -->
 
     <section id="post-project" class="form-section">
-
         <h2>Post a Project</h2>
-
-        <p>
-            Create a project and find the right freelancer.
-        </p>
+        <p>Create a project and find the right freelancer.</p>
 
         <form id="projectForm">
-
-            <input
-                type="text"
-                id="projectTitle"
-                placeholder="Project Title"
-                required
-            >
-
-            <textarea
-                id="projectDescription"
-                placeholder="Project Description"
-                rows="5"
-                required
-            ></textarea>
-
-            <input
-                type="number"
-                id="projectBudget"
-                placeholder="Budget"
-                min="1"
-                required
-            >
-
-            <input
-                type="text"
-                id="projectCategory"
-                placeholder="Category"
-                required
-            >
-
-            <button type="submit">
-                Post Project
-            </button>
-
+            <input type="text" id="projectTitle" placeholder="Project Title" required>
+            <textarea id="projectDescription" placeholder="Project Description" rows="5" required></textarea>
+            <input type="number" id="projectBudget" placeholder="Budget (₹)" min="1" required>
+            <input type="text" id="projectCategory" placeholder="Category (e.g. Fullstack, Backend)" required>
+            <button type="submit">Post Project</button>
         </form>
 
-        <p id="projectMessage"></p>
-
+        <p id="projectMessage" class="message-text"></p>
     </section>
 
 
     <!-- =========================
-         SUBMIT PROPOSAL
+         SUBMIT PROPOSAL (Feature 5)
     ========================== -->
 
     <section id="proposal" class="form-section">
-
         <h2>Submit a Proposal</h2>
-
-        <p>
-            Apply for a project by submitting your proposal.
-        </p>
+        <p>Apply for a project with your quote, pitch, and estimated delivery timeframe.</p>
 
         <form id="proposalForm">
-
-            <input
-                type="number"
-                id="proposalProjectId"
-                placeholder="Project ID"
-                min="1"
-                required
-            >
-
-            <input
-                type="email"
-                id="freelancerEmail"
-                placeholder="Freelancer Email"
-                required
-            >
-
-            <textarea
-                id="coverLetter"
-                placeholder="Cover Letter"
-                rows="6"
-                required
-            ></textarea>
-
-            <input
-                type="number"
-                id="proposedAmount"
-                placeholder="Proposed Amount"
-                min="1"
-                required
-            >
-
-            <button type="submit">
-                Submit Proposal
-            </button>
-
+            <input type="number" id="proposalProjectId" placeholder="Project ID" min="1" required>
+            <input type="email" id="freelancerEmail" placeholder="Freelancer Email" required>
+            <textarea id="coverLetter" placeholder="Cover Letter: Explain why you are the best fit for this project..." rows="6" required></textarea>
+            <input type="number" id="proposedAmount" placeholder="Proposed Amount (₹)" min="1" required>
+            <input type="text" id="estimatedDelivery" placeholder="Estimated Delivery (e.g. 2 weeks, 10 days)">
+            <button type="submit">Submit Proposal</button>
         </form>
 
-        <p id="proposalMessage"></p>
-
+        <p id="proposalMessage" class="message-text"></p>
     </section>
+
+
+    <!-- =========================
+         VIEW PROPOSALS (Feature 5 Lifecycle)
+    ========================== -->
+
+    <section id="view-proposals" class="proposals-section">
+        <h2>View Proposals</h2>
+        <p>Review all proposals submitted for a specific project.</p>
+
+        <form id="viewProposalsForm" class="proposals-filter-form">
+            <div class="filter-group">
+                <input type="number" id="searchProjectId" placeholder="Enter Project ID (e.g. 1)" min="1">
+                <button type="submit" id="fetchProposalsBtn">View Proposals</button>
+            </div>
+        </form>
+
+        <p id="viewProposalsMessage" class="message-text"></p>
+
+        <div id="proposalsList" class="proposals-list">
+            <!-- Proposals will be loaded here -->
+        </div>
+    </section>
+
+
+    <!-- =========================
+         REVIEWS MODAL / SECTION (Feature 7)
+    ========================== -->
+
+    <div id="reviewModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeReviewModal()">&times;</span>
+            <h3 id="reviewModalTitle">Leave a Project Review</h3>
+            <p id="reviewModalSub" class="text-muted">Rate your collaborator for this completed project.</p>
+
+            <form id="submitReviewForm">
+                <input type="hidden" id="reviewProjectId">
+                <div class="form-group">
+                    <label for="reviewRating">Rating (1 to 5 Stars):</label>
+                    <select id="reviewRating" required>
+                        <option value="5">★★★★★ (5 - Outstanding)</option>
+                        <option value="4">★★★★☆ (4 - Very Good)</option>
+                        <option value="3">★★★☆☆ (3 - Good / Average)</option>
+                        <option value="2">★★☆☆☆ (2 - Below Average)</option>
+                        <option value="1">★☆☆☆☆ (1 - Poor)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reviewComment">Review Feedback:</label>
+                    <textarea id="reviewComment" rows="4" placeholder="Write feedback regarding quality, communication, and timeliness..." required></textarea>
+                </div>
+                <button type="submit" class="primary-btn">Submit Review</button>
+            </form>
+            <p id="reviewFormMessage" class="message-text"></p>
+        </div>
+    </div>
 
 
     <!-- =========================
@@ -255,33 +380,15 @@
     ========================== -->
 
     <section id="login" class="form-section">
-
         <h2>Login</h2>
 
         <form id="loginForm">
-
-            <input
-                type="email"
-                id="loginEmail"
-                placeholder="Email"
-                required
-            >
-
-            <input
-                type="password"
-                id="loginPassword"
-                placeholder="Password"
-                required
-            >
-
-            <button type="submit">
-                Login
-            </button>
-
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button type="submit">Login</button>
         </form>
 
-        <p id="loginMessage"></p>
-
+        <p id="loginMessage" class="message-text"></p>
     </section>
 
 
@@ -290,52 +397,20 @@
     ========================== -->
 
     <section id="register" class="form-section">
-
         <h2>Create Account</h2>
 
         <form id="registerForm">
-
-            <input
-                type="text"
-                id="registerName"
-                placeholder="Full Name"
-                required
-            >
-
-            <input
-                type="email"
-                id="registerEmail"
-                placeholder="Email"
-                required
-            >
-
-            <input
-                type="password"
-                id="registerPassword"
-                placeholder="Password"
-                required
-            >
-
+            <input type="text" id="registerName" placeholder="Full Name" required>
+            <input type="email" id="registerEmail" placeholder="Email" required>
+            <input type="password" id="registerPassword" placeholder="Password" required>
             <select id="registerRole">
-
-                <option value="FREELANCER">
-                    Freelancer
-                </option>
-
-                <option value="CLIENT">
-                    Client
-                </option>
-
+                <option value="FREELANCER">Freelancer</option>
+                <option value="CLIENT">Client</option>
             </select>
-
-            <button type="submit">
-                Register
-            </button>
-
+            <button type="submit">Register</button>
         </form>
 
-        <p id="registerMessage"></p>
-
+        <p id="registerMessage" class="message-text"></p>
     </section>
 
 
@@ -344,16 +419,9 @@
     ========================== -->
 
     <footer>
-
-        <p>
-            © 2026 Freelancer Platform
-        </p>
-
+        <p>© 2026 Freelancer Platform — Professional Marketplace</p>
     </footer>
 
-
     <script src="script.js"></script>
-
 </body>
-
 </html>
