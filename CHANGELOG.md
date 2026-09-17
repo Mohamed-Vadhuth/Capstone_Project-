@@ -5,6 +5,18 @@ All notable changes to the Freelancer Platform project are documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-09-17
+
+### Added
+- **Login Security Email Notification**:
+  - Implemented dedicated `EmailService` using Spring Boot Mail (`JavaMailSender`).
+  - Automatically dispatches security alerts to registered user email addresses upon successful login.
+  - Multi-part email message structure featuring responsive HTML layout and plain-text fallback.
+  - Included user's name greeting, login confirmation, registered account email, formatted UTC timestamp, and account recovery advisory.
+  - Environment-based SMTP configuration (`MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_SMTP_AUTH`, `MAIL_SMTP_STARTTLS_ENABLE`, `MAIL_FROM`).
+  - Resilient error handling: email failures or SMTP outages are safely caught and logged without disrupting user authentication or JWT issuance.
+  - Comprehensive unit and integration test coverage (`EmailServiceTest`, `UserServiceTest`, `SecurityTests`) bringing the test suite to 82 passing tests.
+
 ---
 
 ## [1.0.0] - 2026-09-16

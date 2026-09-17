@@ -198,6 +198,24 @@ Relational MySQL schema with non-destructive evolution:
 - **Role-Based Guards**: Method-level and path-level constraints preventing unauthorized operations (e.g. freelancers cannot post projects; clients cannot submit proposals).
 - **Protected Environment**: Configuration supports external environment variables (`DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`) preventing credential leakage.
 
+### Login Security Email Notification
+- **Trigger**: Every successful user login with valid credentials automatically triggers a security notification email sent to the user's registered email address.
+- **Email Content**:
+  - Greeting addressing the user by their registered name.
+  - Confirmation that a successful login occurred.
+  - Account email and human-readable UTC timestamp (`yyyy-MM-dd HH:mm:ss UTC`).
+  - Security warning: *"If you did not perform this login, please change your password immediately."*
+  - Dual multipart delivery: professional responsive HTML template with plain-text fallback.
+- **Graceful Failure Handling**: Email dispatch failures (e.g. SMTP server unavailable, connection timeouts) are caught and safely logged with masked recipient identifiers. Email delivery failure never disrupts or prevents a valid user login.
+- **SMTP Configuration**: Full SMTP delivery requires configuring external environment variables. No real credentials are hardcoded into source control:
+  - `MAIL_HOST`: SMTP host (e.g., `smtp.sendgrid.net`, `smtp.gmail.com`, `localhost`)
+  - `MAIL_PORT`: SMTP port (defaults to `587`)
+  - `MAIL_USERNAME`: SMTP server username
+  - `MAIL_PASSWORD`: SMTP server password or app key
+  - `MAIL_SMTP_AUTH`: Enable SMTP authentication (`true` / `false`)
+  - `MAIL_SMTP_STARTTLS_ENABLE`: Enable TLS encryption (`true` / `false`)
+  - `MAIL_FROM`: Sender email address (defaults to `noreply@freelancerplatform.com`)
+
 ---
 
 ## 🔄 12. Project & Proposal Lifecycles
@@ -276,8 +294,8 @@ Run the complete automated test suite:
 ```
 
 ### Current Test Suite Result:
-- **Total Tests**: 77
-- **Passed**: 77
+- **Total Tests**: 82
+- **Passed**: 82
 - **Failures**: 0
 - **Errors**: 0
 - **Skipped**: 0

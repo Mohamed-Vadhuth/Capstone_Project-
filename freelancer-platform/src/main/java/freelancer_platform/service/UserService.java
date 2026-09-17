@@ -29,7 +29,10 @@ public class UserService {
     @Autowired(required = false)
     private ReviewRepository reviewRepository;
 
-    // Preserved constructor for existing UserServiceTest
+    @Autowired(required = false)
+    private EmailService emailService;
+
+    // Preserved constructor for existing tests
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
@@ -39,16 +42,29 @@ public class UserService {
         this.jwtUtil = jwtUtil;
     }
 
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtUtil jwtUtil,
+            EmailService emailService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.emailService = emailService;
+    }
+
     @Autowired
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtUtil jwtUtil,
-            @Autowired(required = false) ReviewRepository reviewRepository) {
+            @Autowired(required = false) ReviewRepository reviewRepository,
+            @Autowired(required = false) EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.reviewRepository = reviewRepository;
+        this.emailService = emailService;
     }
 
     // Register user with BCrypt hashed password
@@ -65,6 +81,18 @@ public class UserService {
                 .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 .map(user -> {
                     String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+
+                    // Trigger security notification email safely upon successful credential validation
+                    if (emailService != null) {
+                        try {
+                            emailService.sendLoginNotification(user.getEmail(), user.getName(), java.time.LocalDateTime.now());
+                        } catch (Exception e) {
+                            // Safe error logging: login must proceed regardless of email failure
+                            org.slf4j.LoggerFactory.getLogger(UserService.class)
+                                    .warn("Failed to dispatch login notification email: {}", e.getMessage());
+                        }
+                    }
+
                     return new AuthResponse(token, user.getEmail(), user.getRole());
                 });
     }

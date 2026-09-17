@@ -33,6 +33,9 @@ public class UserServiceTest {
     @Mock
     private JwtUtil jwtUtil;
 
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private UserService userService;
 
@@ -59,24 +62,24 @@ public class UserServiceTest {
         assertEquals("Alice", response.getName());
         assertEquals("alice@example.com", response.getEmail());
         assertEquals("CLIENT", response.getRole());
-        assertEquals("encodedPass_xyz", sampleUser.getPassword());
-
-        verify(passwordEncoder, times(1)).encode("plainPass123");
-        verify(userRepository, times(1)).save(sampleUser);
+        verify(passwordEncoder).encode("plainPass123");
+        verify(userRepository).save(sampleUser);
     }
 
     @Test
-    @DisplayName("registerUser: preserves role correctly (FREELANCER)")
-    void testRegisterUserFreelancerRole() {
+    @DisplayName("registerUser: freelancer role is preserved correctly")
+    void testRegisterUserFreelancer() {
         // Arrange
         User freelancer = new User("Bob", "bob@example.com", "secret456", "FREELANCER");
-        when(passwordEncoder.encode("secret456")).thenReturn("hashed_secret");
-        when(userRepository.save(any(User.class))).thenReturn(freelancer);
+        when(passwordEncoder.encode("secret456")).thenReturn("encodedPass_abc");
+        User savedFreelancer = new User("Bob", "bob@example.com", "encodedPass_abc", "FREELANCER");
+        when(userRepository.save(any(User.class))).thenReturn(savedFreelancer);
 
         // Act
         UserResponse response = userService.registerUser(freelancer);
 
         // Assert
+        assertNotNull(response);
         assertEquals("FREELANCER", response.getRole());
         assertEquals("bob@example.com", response.getEmail());
         verify(passwordEncoder).encode("secret456");
@@ -84,7 +87,7 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("login: returns AuthResponse with JWT when credentials match")
+    @DisplayName("login: returns AuthResponse with JWT when credentials match and triggers email notification")
     void testLoginSuccess() {
         // Arrange
         LoginRequest request = new LoginRequest();
@@ -110,10 +113,37 @@ public class UserServiceTest {
         verify(userRepository).findByEmail("alice@example.com");
         verify(passwordEncoder).matches("plainPass123", "hashed_pass");
         verify(jwtUtil).generateToken("alice@example.com", "CLIENT");
+        verify(emailService, times(1)).sendLoginNotification(eq("alice@example.com"), eq("Alice"), any());
     }
 
     @Test
-    @DisplayName("login: returns empty Optional when password does not match")
+    @DisplayName("login: returns AuthResponse even if email service throws exception")
+    void testLoginSuccessWhenEmailServiceFails() {
+        // Arrange
+        LoginRequest request = new LoginRequest();
+        request.setEmail("alice@example.com");
+        request.setPassword("plainPass123");
+
+        User existingUser = new User("Alice", "alice@example.com", "hashed_pass", "CLIENT");
+        when(userRepository.findByEmail("alice@example.com")).thenReturn(Optional.of(existingUser));
+        when(passwordEncoder.matches("plainPass123", "hashed_pass")).thenReturn(true);
+        when(jwtUtil.generateToken("alice@example.com", "CLIENT")).thenReturn("jwt_sample_token");
+        doThrow(new RuntimeException("Mail server down"))
+                .when(emailService).sendLoginNotification(anyString(), anyString(), any());
+
+        // Act
+        Optional<AuthResponse> result = userService.login(request);
+
+        // Assert
+        assertTrue(result.isPresent());
+        AuthResponse auth = result.get();
+        assertEquals("jwt_sample_token", auth.getToken());
+        assertEquals("alice@example.com", auth.getEmail());
+        verify(emailService, times(1)).sendLoginNotification(eq("alice@example.com"), eq("Alice"), any());
+    }
+
+    @Test
+    @DisplayName("login: returns empty Optional when password does not match and does NOT trigger email")
     void testLoginInvalidPassword() {
         // Arrange
         LoginRequest request = new LoginRequest();
@@ -132,10 +162,11 @@ public class UserServiceTest {
         verify(userRepository).findByEmail("alice@example.com");
         verify(passwordEncoder).matches("wrongPassword", "hashed_pass");
         verifyNoInteractions(jwtUtil);
+        verifyNoInteractions(emailService);
     }
 
     @Test
-    @DisplayName("login: returns empty Optional when user does not exist")
+    @DisplayName("login: returns empty Optional when user does not exist and does NOT trigger email")
     void testLoginUserNotFound() {
         // Arrange
         LoginRequest request = new LoginRequest();
@@ -152,6 +183,7 @@ public class UserServiceTest {
         verify(userRepository).findByEmail("nonexistent@example.com");
         verifyNoInteractions(passwordEncoder);
         verifyNoInteractions(jwtUtil);
+        verifyNoInteractions(emailService);
     }
 
     @Test

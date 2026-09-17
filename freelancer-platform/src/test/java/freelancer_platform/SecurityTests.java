@@ -12,11 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import freelancer_platform.service.EmailService;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,6 +43,9 @@ public class SecurityTests {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @MockitoBean
+    private EmailService emailService;
 
     @Test
     @DisplayName("1. BCrypt: Password should be hashed, not stored plain text")
@@ -81,6 +89,8 @@ public class SecurityTests {
                 .andExpect(jsonPath("$.email").value(testEmail))
                 .andExpect(jsonPath("$.role").value("FREELANCER"))
                 .andExpect(jsonPath("$.password").doesNotExist());
+
+        verify(emailService, times(1)).sendLoginNotification(eq(testEmail), eq("Login Tester"), any());
     }
 
     @Test
@@ -103,6 +113,8 @@ public class SecurityTests {
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("Invalid email or password"));
+
+        verify(emailService, never()).sendLoginNotification(eq(testEmail), any(), any());
     }
 
     @Test
