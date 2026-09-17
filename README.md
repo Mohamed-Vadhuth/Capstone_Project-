@@ -314,11 +314,57 @@ Automated testing is configured using **GitHub Actions** (`.github/workflows/ci.
   3. Executes the full automated suite via `./mvnw clean test`.
   4. Fails the workflow immediately if any test fails.
 
+## ☁️ 16. Cloud Backend Deployment (Render / Docker)
+
+The backend is packaged for automated cloud deployment (e.g. Render, Railway, AWS ECS) using a multi-stage Docker build with Eclipse Temurin Java 21 JRE.
+
+### 1. Health Check Endpoint
+- **URL**: `GET /health`
+- **Response**: `{"status":"UP"}` (HTTP 200, public / non-authenticated).
+- **Usage**: Used as the health check path in cloud hosting services to verify container readiness.
+
+### 2. Required Production Environment Variables
+Configure these variables in your cloud hosting environment dashboard:
+
+| Variable | Description | Example / Recommended Value |
+| :--- | :--- | :--- |
+| `PORT` | Web service listening port (provided dynamically by host) | `10000` (Render default) or `8080` |
+| `SPRING_DATASOURCE_URL` | Cloud MySQL JDBC connection URL (MySQL 8.0+) | `jdbc:mysql://<host>:<port>/<db>?useSSL=true&serverTimezone=UTC` |
+| `SPRING_DATASOURCE_USERNAME` | Cloud database user | `<db_username>` |
+| `SPRING_DATASOURCE_PASSWORD` | Cloud database password | `<db_password>` |
+| `SPRING_JPA_HIBERNATE_DDL_AUTO` | Schema evolution (use safe `update` for student deployments) | `update` |
+| `SPRING_JPA_SHOW_SQL` | SQL logging in server logs | `false` |
+| `JWT_SECRET` | 256-bit+ secure base64 secret key for signing tokens | *Secure production key* |
+| `JWT_EXPIRATION_MS` | JWT validity duration in milliseconds | `86400000` (24 hours) |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated list of allowed frontend origins | `https://your-frontend.vercel.app,http://localhost:3000` |
+| `MAIL_HOST` | SMTP server host | `smtp.gmail.com` |
+| `MAIL_PORT` | SMTP server port | `587` |
+| `MAIL_USERNAME` | SMTP account email address | `your_email@gmail.com` |
+| `MAIL_PASSWORD` | 16-character Google App Password (never personal password) | *Google App Password* |
+| `MAIL_SMTP_AUTH` | Enable SMTP authentication | `true` |
+| `MAIL_SMTP_STARTTLS_ENABLE` | Enable TLS encryption | `true` |
+| `MAIL_FROM` | Sender address shown in security alerts | `your_email@gmail.com` |
+
+> [!IMPORTANT]
+> **Secret Protection**: Never commit `.env` or real production secrets to Git. The `.env` file is excluded via `.gitignore` and `.dockerignore`.
+
+### 3. Frontend API URL Configuration
+Once your backend is live (e.g. `https://freelancer-backend.onrender.com`):
+- Connect the Vercel frontend by setting the backend URL in the browser console:
+  ```javascript
+  localStorage.setItem("customApiUrl", "https://freelancer-backend.onrender.com");
+  ```
+  or configure `window.API_BASE_URL` in `index.html`.
+
+### 4. Outbound SMTP on Free Hosting
+Free cloud tiers (e.g. Render free tier) may restrict or block outbound traffic on SMTP port `587` or `465`. The application's `EmailService` handles connectivity issues gracefully: if SMTP connection is timed out or blocked, it safely logs a warning and allows user login and token generation to succeed without throwing unhandled exceptions.
+
 ---
 
-## 🔮 16. Future Enhancements
+## 🔮 17. Future Enhancements
 
 - Milestone payment escrow integration (Stripe / PayPal sandbox).
 - Real-time WebSocket messaging and project collaboration chat.
 - Secure file and asset attachment storage for project deliverables.
-- Cloud staging and production deployment.
+- Custom domain mapping with automated SSL renewal.
+
