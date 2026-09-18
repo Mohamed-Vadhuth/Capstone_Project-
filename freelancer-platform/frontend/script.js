@@ -1,7 +1,13 @@
 // Dynamically configure backend API URL for local and cloud environments
+const isLocalhost = typeof window !== "undefined" && (
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === ""
+);
+
 const API_URL = (typeof window !== "undefined" && window.API_BASE_URL)
     || (typeof localStorage !== "undefined" && localStorage.getItem("customApiUrl"))
-    || "http://localhost:8080";
+    || (isLocalhost ? "http://localhost:8080" : "https://freelancer-platform-ioq0.onrender.com");
 
 /* =========================
    AUTH TOKEN & SESSION HELPERS
